@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="chat-box" id="chat-box">
+        <!-- Сообщения будут добавляться сюда -->
+    </div>
+    <div class="input-box">
+        <input type="text" id="query" placeholder="Введите запрос...">
+        <button onclick="sendMessage()" id='send-request'>Отправить</button>
+    </div>
+</div>
+
+<script>
+  function sendMessage() {
+    const input = document.getElementById('query');
+    const userMessage = input.value;
+
+    if (userMessage.trim() === "") {
+      return;
+    }
+
+    // Добавляем сообщение пользователя в чат
+    const chatBox = document.getElementById('chat-box');
+    const userMessageElement = document.createElement('div');
+    userMessageElement.className = 'message user';
+    userMessageElement.textContent = userMessage;
+    chatBox.appendChild(userMessageElement);
+
+    // Прокручиваем чат вниз
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Отправляем запрос на сервер
+    fetch('/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({ query: userMessage })
+    });
+
+    // Очищаем поле ввода
+    input.value = '';
+  }
+
+</script>
